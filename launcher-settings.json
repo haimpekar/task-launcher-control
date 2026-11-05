@@ -1,0 +1,114 @@
+{
+  "format": "chatgpt-task-launcher-settings",
+  "formatVersion": 1,
+  "revision": 1,
+  "updatedAt": "2026-11-05T05:59:00.000Z",
+  "configuration": {
+    "schemaVersion": 3,
+    "defaultProfileId": "hourly-example",
+    "profiles": [
+      {
+        "id": "hourly-example",
+        "name": "Hourly example",
+        "url": "https://chatgpt.com/",
+        "prompt": "Run my example flow.",
+        "effort": "high",
+        "focusMode": "background",
+        "sendMethod": "button",
+        "schedule": {
+          "type": "interval",
+          "minutes": 60
+        },
+        "enabled": false,
+        "autoClose": true
+      },
+      {
+        "id": "manual-example",
+        "name": "Manual example",
+        "url": "https://chatgpt.com/?temporary-chat=true",
+        "prompt": "Run my other example flow.",
+        "effort": "current",
+        "focusMode": "manual",
+        "sendMethod": "keyboard",
+        "schedule": {
+          "type": "manual"
+        },
+        "enabled": false,
+        "autoClose": false
+      }
+    ]
+  },
+  "optionCatalog": {
+    "url": {
+      "description": "ChatGPT target URL",
+      "choices": [
+        {
+          "kind": "new",
+          "example": "https://chatgpt.com/",
+          "recommended": true
+        },
+        {
+          "kind": "temporary",
+          "example": "https://chatgpt.com/?temporary-chat=true",
+          "recommended": true
+        },
+        {
+          "kind": "existing",
+          "example": "https://chatgpt.com/c/<conversation-id>",
+          "recommended": false,
+          "warning": "Strongly advised: do not publish a private-conversation URL in this public file. It exposes the conversation identifier."
+        }
+      ]
+    },
+    "prompt": {
+      "description": "Free text sent as the task message; it can name a private flow or project."
+    },
+    "effort": [
+      "high",
+      "medium",
+      "current"
+    ],
+    "sendMethod": [
+      "keyboard",
+      "button"
+    ],
+    "focusMode": [
+      "background",
+      "manual",
+      "always"
+    ],
+    "enabled": [
+      true,
+      false
+    ],
+    "autoClose": [
+      true,
+      false
+    ],
+    "schedule": {
+      "type": [
+        "manual",
+        "interval",
+        "daily",
+        "weekly"
+      ],
+      "minutes": {
+        "minimum": 60,
+        "maximum": 10080,
+        "examples": [
+          60,
+          120
+        ]
+      },
+      "time": "HH:MM local time",
+      "days": {
+        "minimum": 0,
+        "maximum": 6,
+        "meaning": "0=Sunday through 6=Saturday"
+      }
+    },
+    "defaultProfileId": "Must match one profile ID in configuration.profiles.",
+    "revision": "Positive integer; increment for every settings-file change.",
+    "updatedAt": "Canonical UTC timestamp in ISO 8601 format."
+  }
+}
