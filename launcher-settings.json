@@ -11,7 +11,7 @@
         "id": "hourly-example",
         "name": "Hourly example",
         "url": "https://chatgpt.com/",
-        "prompt": "Run my example flow.",
+        "prompt": "Run the next Shock Lab stage according to haimpekar/LLM/products/EDI/RUN.md on GitHub.",
         "effort": "high",
         "focusMode": "background",
         "sendMethod": "button",
