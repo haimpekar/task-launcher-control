@@ -20,7 +20,7 @@
           "type": "interval",
           "minutes": 60
         },
-        "enabled": false,
+        "enabled": true,
         "autoClose": true
       },
       {
