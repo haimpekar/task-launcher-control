@@ -2,8 +2,8 @@
   "format": "chatgpt-task-launcher-control",
   "formatVersion": 2,
   "mode": "RUN",
-  "revision": 2,
-  "updatedAt": "2026-11-10T08:43:26.351Z",
+  "revision": 3,
+  "updatedAt": "2026-11-10T12:50:46.000Z",
   "configuration": {
     "schemaVersion": 3,
     "defaultProfileId": "hourly-example",
