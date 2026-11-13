@@ -1,0 +1,60 @@
+{
+  // Task Launcher control — JSONC (JSON with comments), version 4.
+  // This file is PUBLIC. Do not place secrets or private data here.
+  "format": "chatgpt-task-launcher-control",
+  "formatVersion": 4,
+
+  // Global switch: "RUN" (allow new tasks) | "PAUSE" (stop new tasks).
+  "mode": "RUN",
+
+  // First profile is the default when you click the extension toolbar icon.
+  // Profile "name" is the only identity you maintain; no separate "id".
+  // Renaming a profile creates a new identity and resets that task's history.
+  //
+  // SCHEDULE OPTIONS — use exactly one of:
+  //   "manual"                         no automatic runs (also the default)
+  //   "every 60 minutes"               any whole number from 60 to 10080
+  //   "daily at 09:00"                 HH:MM, on this computer's local clock
+  //   "weekly on Sun at 09:00"         one weekday
+  //   "weekly on Sun,Wed at 09:00"     multiple weekdays
+  //   Days: Sun Mon Tue Wed Thu Fri Sat (no spaces between comma-separated days).
+  //
+  // OTHER OPTIONAL PROFILE SETTINGS:
+  //   url:        "https://chatgpt.com/" (default, new chat)
+  //               "https://chatgpt.com/?temporary-chat=true"
+  //               "https://chatgpt.com/c/<conversation-id>" (publicly exposes ID)
+  //   effort:     "current" (default) | "high" | "medium"
+  //   focusMode:  "background" (default) | "manual" | "always"
+  //   sendMethod: "button" (default) | "keyboard"
+  //   enabled:    true (default) | false   [false disables scheduling,
+  //                                          but not manual Run Now]
+  //   autoClose:  true (default) | false
+  // Only "name" and "prompt" are required. Use comments to document your tasks.
+  "profiles": [
+    {
+      "name": "Hourly example",
+      "prompt": "Run the next Shock Lab stage according to haimpekar/LLM/products/EDI/RUN.md on GitHub.",
+      "effort": "high",
+      "schedule": "every 60 minutes"
+    },
+    {
+      "name": "Applied materials",
+      // Existing conversation ID is visible to anyone viewing this public file.
+      "url": "https://chatgpt.com/c/6af467b9-68ac-83eb-aca3-0104af31e8a5",
+      "prompt": "תבדוק את המצב עכשיו",
+      "effort": "high",
+      // Provisional: Sunday 09:00 local computer time. Change as desired.
+      "schedule": "weekly on Sun at 09:00"
+    },
+    {
+      "name": "Manual example",
+      "url": "https://chatgpt.com/?temporary-chat=true",
+      "prompt": "Run my other example flow.",
+      "focusMode": "manual",
+      "sendMethod": "keyboard",
+      "enabled": false,
+      "autoClose": false
+      // No schedule means "manual".
+    }
+  ]
+}

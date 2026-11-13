@@ -1,44 +1,39 @@
-# Task Launcher Control — v3
+# Task Launcher Control — v4 (JSONC)
 
-This public repository contains the **single authoritative** `control.json` for the ChatGPT Task Launcher Chrome extension, format version **3 only**. It provides global RUN/PAUSE and all task profiles. The extension checks GitHub before every launch and periodically refreshes the profiles. Editing this file does not run tasks unless Chrome is open and the local Task Scheduler is enabled.
+The single source of truth is **[control.jsonc](control.jsonc)**. It contains all tasks and RUN/PAUSE mode in one readable file, with comments showing **every supported setting and schedule form**.
 
 ## Editing
 
-Edit `control.json` directly on `main`. **No revision counter, timestamp, inline option catalog, nested `configuration`, or `schemaVersion` is required.** The GitHub API's file SHA identifies the retrieved file and its HTTP Date/Age headers provide freshness verification. A rollback cannot be detected with a monotonic revision anymore; use Git history for audit or recovery.
+Edit `control.jsonc` on `main`, using GitHub's editor. JSONC accepts `//` line comments and `/* … */` block comments; trailing commas are also tolerated. Comments are ignored by the launcher, but are visible to humans, so you can keep explanations and example options directly in the file.
 
-Strict JSON only: no comments, trailing commas, unsupported fields or invalid schedules. The extension **does not** understand the old v2 format and fails closed if it encounters it.
+The parser is **strictly v4-only**. There is no alternate `control.json`, v3 support, nested `configuration`, `optionCatalog`, `schemaVersion`, revision or update timestamp. The extension verifies GitHub's file SHA and freshness before launches; malformed or inaccessible controller data **blocks launches**.
 
-## Minimal form
+## Profiles — no duplicate ID/name
 
-```json
-{
-  "format": "chatgpt-task-launcher-control",
-  "formatVersion": 3,
-  "mode": "RUN",
-  "profiles": [
-    {"name": "My task", "prompt": "Do this task."}
-  ]
-}
-```
+Every entry needs only a **unique `name`** and a **`prompt`**. The extension derives an internal ID from the name for Chrome alarms and run history. No separate public ID is supported. Renaming a task therefore changes its internal identity and starts fresh history for that task; avoid renaming a task while it is actively running. The **first** profile is the default when clicking the extension toolbar icon, so reorder the list if needed.
 
-`mode` is `RUN` or `PAUSE` (a global stop on new launches, not on already-running jobs). `profiles` is an array of 1–500 entries. `defaultProfileId` is optional; the first profile is the default.
+Optional settings have defaults: `url` = `https://chatgpt.com/` (new chat); `effort` = `current`; `focusMode` = `background`; `sendMethod` = `button`; `enabled` = `true`; `autoClose` = `true`; `schedule` = `manual`. Available alternatives are documented directly in `control.jsonc`. The user can manually run a task even if its `enabled` flag is false, provided the global/local launch gates permit it.
 
-Each profile requires `name` (nonempty, max 90 chars) and `prompt` (1–30,000 chars). Its `id` is optional if the name can be converted into a unique, valid ASCII slug. Explicit IDs remain stable across renames and should be preferred for ongoing scheduled tasks; valid IDs are 1–64 lowercase ASCII letters, digits, underscores or hyphens, starting with a letter/digit.
+## Schedules
 
-Profile defaults if omitted: `url` = `https://chatgpt.com/` (new chat), `effort` = `current`, `focusMode` = `background`, `sendMethod` = `button`, `enabled` = `true`, `autoClose` = `true`, and `schedule` = `{"type":"manual"}`. A manual schedule does not run automatically.
+Write one plain-language `schedule` string with one of the following exact patterns:
 
-Schedule keys depend on `type`:
-- `{"type":"manual"}` — manual only.
-- `{"type":"interval","minutes":60}` — every 60 minutes (integer 60–10,080).
-- `{"type":"daily","time":"09:00"}` — every day, local HH:MM.
-- `{"type":"weekly","time":"09:00","days":[0,3]}` — Sunday and Wednesday at local 09:00; day numbers are 0=Sunday through 6=Saturday.
+| Meaning | Example |
+| --- | --- |
+| Only manual | `"manual"` (or omit schedule entirely) |
+| Every N minutes | `"every 60 minutes"` (whole N from 60 to 10,080) |
+| Every day at local time | `"daily at 09:00"` |
+| Specific weekday at local time | `"weekly on Sun at 09:00"` |
+| Multiple weekdays at local time | `"weekly on Sun,Wed at 09:00"` |
 
-The other allowed values are `effort`: `high`, `medium`, `current`; `focusMode`: `background`, `manual`, `always`; `sendMethod`: `button`, `keyboard`. `enabled:false` disables scheduled runs but still permits a manual Run Now; `autoClose` controls eligible completed tabs. `url` permits a new chat, a temporary chat, or an existing chat URL.
+Days must be `Sun`, `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`; use a comma with no spaces for multiple days. Times are `HH:MM` in the computer's local time zone. Intervals schedule recurring Chrome alarms; daily/weekly follow local wall time. Chrome and your computer must be running/awake for automatic tasks.
 
-## Existing schedules
+The Applied materials weekly task is provisionally set to **Sunday at 09:00 local time**, because no schedule day/time was supplied previously. Adjust it to your preference.
 
-`hourly-example` runs Shock Lab every 60 minutes. `applied-materials` has been given a **provisional Sunday 09:00 local schedule**, since the original weekly schedule did not specify a time or weekday. Change these values to your actual preferred time if needed. `manual-example` remains available but disabled.
+## Privacy and limits
 
-**Privacy:** This repository is public. All prompt text, profile names, schedules, and included chat URLs can be read by anybody. The Applied materials profile currently publishes an existing ChatGPT conversation identifier. That does not grant access to the conversation by itself, but it exposes the identifier. Prefer a new chat target if you do not want to publish it. The extension never uploads task replies, results, diagnostics, or credentials here.
+This repository is **public**; every URL, prompt, name and comment is visible to the public. The Applied materials entry includes an existing ChatGPT conversation URL. It does not itself authorize access to the private chat, but exposes its identifier. Avoid such URLs if you prefer not to publish them.
 
-`RUN` requires a fresh valid file from GitHub. An invalid file, GitHub API error or stale response blocks new launches, preserving the fail-closed behavior.
+The file allows 1–500 uniquely named profiles (max 512 KiB); each prompt is 1–30,000 characters. All unknown fields, invalid schedule expressions and old formats are rejected. New launches require a fresh verified `RUN`. The file does not launch tasks in the cloud and does not upload run history or results.
+
+**Installation:** Update Task Launcher to the matching v0.14.60 extension, then refresh settings. v3 extensions read the retired `control.json` path and cannot use v4.
