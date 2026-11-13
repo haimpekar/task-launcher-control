@@ -24,6 +24,20 @@
         "autoClose": true
       },
       {
+        "id": "Applied materials",
+        "name": "Applied materials",
+        "url": "https://chatgpt.com/c/6af467b9-68ac-83eb-aca3-0104af31e8a5",
+        "prompt": "תבדוק את המצב עכשיו",
+        "effort": "high",
+        "focusMode": "background",
+        "sendMethod": "button",
+        "schedule": {
+          "type": "weekly",          
+        },
+        "enabled": true,
+        "autoClose": true
+      },      
+      {
         "id": "manual-example",
         "name": "Manual example",
         "url": "https://chatgpt.com/?temporary-chat=true",
