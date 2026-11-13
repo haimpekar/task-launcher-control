@@ -1,39 +1,34 @@
-# Task Launcher Control — v4 (JSONC)
+# Task Launcher controller — JSONC v5
 
-The single source of truth is **[control.jsonc](control.jsonc)**. It contains all tasks and RUN/PAUSE mode in one readable file, with comments showing **every supported setting and schedule form**.
+The only public controller is **[control.jsonc](control.jsonc)**. Edit the JSONC file on `main`. Its comments describe the supported options, including the **strict type-dependent schedule objects**. The formatVersion is **5** (no v4/text-schedule compatibility). Unknown fields, missing required fields and invalid schedules block new task launches.
 
-## Editing
+## Profiles
 
-Edit `control.jsonc` on `main`, using GitHub's editor. JSONC accepts `//` line comments and `/* … */` block comments; trailing commas are also tolerated. Comments are ignored by the launcher, but are visible to humans, so you can keep explanations and example options directly in the file.
+Every profile requires exactly these six fields:
+- `name`: user-visible task name; the application derives an internal unique ID
+- `prompt`: exact task text, 1–30,000 characters
+- `enabled`: boolean, whether automatic runs are enabled (a disabled task remains manually runnable)
+- `autoClose`: boolean; safely close an eligible completed tab, not failed/uncertain tabs
+- `effort`: one of `"current"`, `"medium"`, `"high"`
+- `schedule`: an object in exactly one of the forms below
 
-The parser is **strictly v4-only**. There is no alternate `control.json`, v3 support, nested `configuration`, `optionCatalog`, `schemaVersion`, revision or update timestamp. The extension verifies GitHub's file SHA and freshness before launches; malformed or inaccessible controller data **blocks launches**.
+`url` is optional; default `https://chatgpt.com/`. You may use Temporary Chat or an existing chat URL. The first profile is the toolbar default. **No `id`, `focusMode`, `sendMethod`, or `defaultProfileId` fields.** The application always opens task tabs in the background, and uses one guarded Send-button path with positive UI acceptance checks. Technical UI/submission details are not configurable. Renaming a profile changes its internally generated ID.
 
-## Profiles — no duplicate ID/name
+## Strict schedule types
 
-Every entry needs only a **unique `name`** and a **`prompt`**. The extension derives an internal ID from the name for Chrome alarms and run history. No separate public ID is supported. Renaming a task therefore changes its internal identity and starts fresh history for that task; avoid renaming a task while it is actively running. The **first** profile is the default when clicking the extension toolbar icon, so reorder the list if needed.
+| Type | Exact shape | Meaning |
+| --- | --- | --- |
+| Manual | `{"type":"manual"}` | Only Run Now; never automatically |
+| Interval | `{"type":"interval","minutes":60}` | Every 60 minutes; N integer 60–10080 |
+| Daily | `{"type":"daily","time":"09:00"}` | Every day at 09:00 local computer time |
+| Weekly | `{"type":"weekly","days":["Sun","Wed"],"time":"09:00"}` | Sunday and Wednesday at 09:00 local |
 
-Optional settings have defaults: `url` = `https://chatgpt.com/` (new chat); `effort` = `current`; `focusMode` = `background`; `sendMethod` = `button`; `enabled` = `true`; `autoClose` = `true`; `schedule` = `manual`. Available alternatives are documented directly in `control.jsonc`. The user can manually run a task even if its `enabled` flag is false, provided the global/local launch gates permit it.
+Days are unique strings from `Sun`, `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`. `time` uses 24-hour `HH:MM`. Fields that do not belong to the selected schedule type are rejected (e.g. `minutes` on a weekly schedule). No free-text scheduling strings are accepted. Chrome and the computer must be running and awake; GitHub does not run the tasks.
 
-## Schedules
+## Safety and privacy
 
-Write one plain-language `schedule` string with one of the following exact patterns:
+`mode` is `RUN` or `PAUSE` globally. The local Scheduler switch also controls launches. Invalid or inaccessible files block new tasks, and GitHub's verified SHA and response freshness identify the current control. JSONC allows `//`, `/*...*/` comments, and trailing commas, but the file remains strictly validated.
 
-| Meaning | Example |
-| --- | --- |
-| Only manual | `"manual"` (or omit schedule entirely) |
-| Every N minutes | `"every 60 minutes"` (whole N from 60 to 10,080) |
-| Every day at local time | `"daily at 09:00"` |
-| Specific weekday at local time | `"weekly on Sun at 09:00"` |
-| Multiple weekdays at local time | `"weekly on Sun,Wed at 09:00"` |
+This repository is **public**: prompts, profile names, comments, and target URLs are publicly readable. The Applied materials profile retains an existing conversation URL, including its identifier. Its Sunday 09:00 schedule is provisional and can be changed.
 
-Days must be `Sun`, `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`; use a comma with no spaces for multiple days. Times are `HH:MM` in the computer's local time zone. Intervals schedule recurring Chrome alarms; daily/weekly follow local wall time. Chrome and your computer must be running/awake for automatic tasks.
-
-The Applied materials weekly task is provisionally set to **Sunday at 09:00 local time**, because no schedule day/time was supplied previously. Adjust it to your preference.
-
-## Privacy and limits
-
-This repository is **public**; every URL, prompt, name and comment is visible to the public. The Applied materials entry includes an existing ChatGPT conversation URL. It does not itself authorize access to the private chat, but exposes its identifier. Avoid such URLs if you prefer not to publish them.
-
-The file allows 1–500 uniquely named profiles (max 512 KiB); each prompt is 1–30,000 characters. All unknown fields, invalid schedule expressions and old formats are rejected. New launches require a fresh verified `RUN`. The file does not launch tasks in the cloud and does not upload run history or results.
-
-**Installation:** Update Task Launcher to the matching v0.14.60 extension, then refresh settings. v3 extensions read the retired `control.json` path and cannot use v4.
+**Update extension to v0.14.61** together with this v5 file; older extension versions do not read this schema.
