@@ -72,6 +72,20 @@
       }
     },
     {
+      "name": "Pension Planner Regulatory Refresh",
+      // Private rules and source inventory are in LLM; this public prompt contains no personal data.
+      "prompt": "Run one due Pension Planner knowledge-refresh pass according to haimpekar/LLM/products/pension-planner/RUN.md in my connected GitHub repository. Report actual status and pending approvals.",
+      "enabled": true,
+      "autoClose": true,
+      "effort": "high",
+      // Weekly trigger only; private RUN.md gates the monthly/quarterly review work.
+      "schedule": {
+        "type": "weekly",
+        "days": ["Sun"],
+        "time": "10:00"
+      }
+    },
+    {
       "name": "Manual example",
       "url": "https://chatgpt.com/?temporary-chat=true",
       "prompt": "Run my other example flow.",
