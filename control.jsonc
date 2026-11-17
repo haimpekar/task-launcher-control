@@ -62,7 +62,7 @@
     },
     {
       "name": "GitHub Actions Monitor",
-      "prompt": "Read and execute the read-only instructions at haimpekar/LLM/products/GitHub-Actions-Monitor/RUN.md in my connected private GitHub repository; report the results in this chat.",
+      "prompt": "Read and execute the instructions at haimpekar/LLM/products/GitHub-Actions-Monitor/RUN.md in my connected private GitHub repository; publish only the private monitoring reports permitted there, then report the results in this chat.",
       "enabled": true,
       "autoClose": true,
       "effort": "high",
