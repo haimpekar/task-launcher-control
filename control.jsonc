@@ -61,6 +61,17 @@
       }
     },
     {
+      "name": "GitHub Daily Health",
+      "prompt": "Read and execute the read-only instructions at haimpekar/LLM/products/GitHubHealth/RUN.md in my connected private GitHub repository; report the results in this chat.",
+      "enabled": true,
+      "autoClose": true,
+      "effort": "high",
+      "schedule": {
+        "type": "daily",
+        "time": "08:00"
+      }
+    },
+    {
       "name": "Manual example",
       "url": "https://chatgpt.com/?temporary-chat=true",
       "prompt": "Run my other example flow.",
