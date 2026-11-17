@@ -61,8 +61,8 @@
       }
     },
     {
-      "name": "GitHub Daily Health",
-      "prompt": "Read and execute the read-only instructions at haimpekar/LLM/products/GitHubHealth/RUN.md in my connected private GitHub repository; report the results in this chat.",
+      "name": "GitHub Actions Monitor",
+      "prompt": "Read and execute the read-only instructions at haimpekar/LLM/products/GitHub-Actions-Monitor/RUN.md in my connected private GitHub repository; report the results in this chat.",
       "enabled": true,
       "autoClose": true,
       "effort": "high",
